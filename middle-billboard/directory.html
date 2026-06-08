@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Directory — Middle Calgary</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.dir-hero {
+  padding: 40px 40px 0;
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
+}
+.dir-hero h1 { font-size: 30px; font-weight: 900; letter-spacing: -.8px; margin-bottom: 6px; }
+.dir-hero p  { font-size: 14px; color: var(--mid); }
+
+.dir-stats {
+  display: flex; gap: 20px; align-items: center;
+  background: white; border: 1.5px solid var(--light);
+  border-radius: 14px; padding: 14px 22px; flex-shrink: 0;
+}
+.dir-stat-n { font-size: 22px; font-weight: 900; letter-spacing: -.5px; }
+.dir-stat-l { font-size: 11px; color: var(--mid); margin-top: 2px; }
+.dir-stat-div { width: 1px; height: 30px; background: var(--light); }
+
+.search-row {
+  padding: 24px 40px 0;
+  display: flex; gap: 12px; align-items: center;
+}
+.search-wrap {
+  position: relative; flex: 1; max-width: 480px;
+}
+.search-wrap::before {
+  content: "🔍";
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 14px; pointer-events: none;
+}
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 40px;
+  border: 1.5px solid var(--light); border-radius: 24px;
+  font-size: 14px; font-family: inherit; outline: none;
+  transition: border-color .15s; background: white;
+}
+.search-input:focus { border-color: var(--dark); }
+
+.sort-select {
+  font-size: 13px; font-weight: 600; color: var(--dark);
+  border: 1.5px solid var(--light); background: white;
+  padding: 10px 36px 10px 16px; border-radius: 24px;
+  cursor: pointer; font-family: inherit; outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+
+.cat-row {
+  padding: 16px 40px 0;
+  display: flex; gap: 8px; align-items: center;
+}
+.cat-label { font-size: 11.5px; font-weight: 600; color: #bbb; text-transform: uppercase; letter-spacing: .5px; flex-shrink: 0; margin-right: 4px; }
+
+.results-row {
+  padding: 20px 40px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.results-count { font-size: 13.5px; color: var(--mid); }
+
+.biz-grid {
+  padding: 0 40px 60px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.biz-card.hidden { display: none; }
+
+.no-results {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--mid);
+  font-size: 15px;
+}
+.no-results span { display: block; font-size: 36px; margin-bottom: 12px; }
+
+@media (max-width: 900px) {
+  .biz-grid { grid-template-columns: repeat(2, 1fr); }
+  .dir-hero { flex-direction: column; align-items: flex-start; padding: 24px 24px 0; }
+  .search-row { padding: 16px 24px 0; flex-wrap: wrap; }
+  .cat-row { padding: 12px 24px 0; }
+  .results-row { padding: 16px 24px 10px; }
+  .biz-grid { padding: 0 24px 40px; }
+}
+@media (max-width: 600px) {
+  .biz-grid { grid-template-columns: 1fr; padding: 0 16px 40px; }
+  .dir-hero { padding: 20px 16px 0; }
+  .dir-stats { display: none; }
+  .search-row { padding: 14px 16px 0; }
+  .cat-row { padding: 10px 16px 0; }
+  .results-row { padding: 14px 16px 10px; }
+}
+</style>
+</head>
+<body>
+
+<div id="nav-placeholder"></div>
+
+<div class="dir-hero">
+  <div>
+    <h1>Calgary Business Directory</h1>
+    <p>Browse and discover local Calgary businesses, deals, and events</p>
+  </div>
+  <div class="dir-stats">
+    <div><div class="dir-stat-n" id="total-count">22</div><div class="dir-stat-l">Businesses</div></div>
+    <div class="dir-stat-div"></div>
+    <div><div class="dir-stat-n">16</div><div class="dir-stat-l">Active promos</div></div>
+    <div class="dir-stat-div"></div>
+    <div><div class="dir-stat-n">4.7★</div><div class="dir-stat-l">Avg rating</div></div>
+  </div>
+</div>
+
+<div class="search-row">
+  <div class="search-wrap">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search businesses, categories, neighbourhoods...">
+  </div>
+  <select class="sort-select" id="sortSelect">
+    <option value="featured">Sort: Featured first</option>
+    <option value="rating">Sort: Top rated</option>
+    <option value="reviews">Sort: Most reviewed</option>
+    <option value="name">Sort: A–Z</option>
+    <option value="promo">Sort: Has promo</option>
+  </select>
+</div>
+
+<div class="cat-row">
+  <span class="cat-label">Category</span>
+  <div class="chips">
+    <button class="chip on" data-cat="all">🏙️ All</button>
+    <button class="chip" data-cat="food">🍔 Food & Drink</button>
+    <button class="chip" data-cat="events">🎉 Events</button>
+    <button class="chip" data-cat="wellness">🧘 Wellness</button>
+    <button class="chip" data-cat="shopping">🛍️ Shopping</button>
+    <button class="chip" data-cat="services">🔧 Services</button>
+  </div>
+</div>
+
+<div class="results-row">
+  <span class="results-count" id="resultsCount">Showing all 22 businesses</span>
+</div>
+
+<div class="biz-grid" id="bizGrid"></div>
+
+<div id="footer-placeholder"></div>
+
+<script src="data.js"></script>
+<script src="shared.js"></script>
+<script>
+injectNav("directory");
+injectFooter();
+
+const BIZ_EMOJIS = { food:"🍔", events:"🎉", wellness:"🧘", shopping:"🛍️", services:"🔧" };
+
+function buildCard(biz) {
+  const ad = biz.adId ? getAd(biz.adId) : null;
+  const img = ad ? `<img src="${ad.img}" alt="${biz.name}" style="object-position:${ad.imgPos||'center'};" loading="lazy">` :
+    `<div style="width:100%;height:100%;background:#f0f0ee;display:flex;align-items:center;justify-content:center;font-size:48px;">${BIZ_EMOJIS[biz.category]||'🏪'}</div>`;
+  const badge = biz.hasPromo
+    ? `<div class="badge badge-promo">🏷️ Active Promo</div>`
+    : biz.isOpen
+    ? `<div class="badge badge-open">● Open Now</div>`
+    : "";
+  const promoStrip = biz.hasPromo && ad
+    ? `<div class="biz-promo-strip"><span class="biz-promo-text">${ad.offer}</span><span class="biz-promo-cta">View →</span></div>`
+    : `<div style="margin-top:8px;"><button class="btn-secondary" style="font-size:12px;padding:7px 14px;">View Profile →</button></div>`;
+
+  const openDot = biz.isOpen ? `<div class="open-dot"></div>` : "";
+  const openText = biz.isOpen ? "Open now" : "Currently closed";
+
+  const a = document.createElement("a");
+  a.href = `business/${biz.id}.html`;
+  a.className = "biz-card";
+  a.setAttribute("data-cat", biz.category);
+  a.setAttribute("data-name", biz.name.toLowerCase());
+  a.setAttribute("data-type", biz.type.toLowerCase());
+  a.setAttribute("data-neighbourhood", biz.neighbourhood.toLowerCase());
+  a.setAttribute("data-rating", biz.rating);
+  a.setAttribute("data-reviews", biz.reviews);
+  a.setAttribute("data-promo", biz.hasPromo ? "1" : "0");
+
+  a.innerHTML = `
+    <div class="biz-card-img">${img}${badge}</div>
+    <div class="biz-card-body">
+      <div class="biz-card-top">
+        <div>
+          <div class="biz-name">${biz.name}</div>
+          <div class="biz-type">${biz.type} · ${biz.neighbourhood}</div>
+        </div>
+        <div class="biz-rating">
+          <span class="stars">★</span>
+          <span class="rat">${biz.rating}</span>
+          <span class="rev">(${biz.reviews.toLocaleString()})</span>
+        </div>
+      </div>
+      <div class="biz-desc">${biz.desc}</div>
+      <div class="biz-meta">
+        <span class="meta-pill">${openDot} ${openText}</span>
+        <span class="meta-pill">📍 ${biz.neighbourhood}</span>
+      </div>
+      ${promoStrip}
+    </div>
+  `;
+  return a;
+}
+
+// Build all cards
+const grid = document.getElementById("bizGrid");
+let currentBizzes = [...BUSINESSES];
+
+function renderCards(list) {
+  grid.innerHTML = "";
+  if (list.length === 0) {
+    grid.innerHTML = `<div class="no-results"><span>🔍</span>No businesses found. Try a different search or category.</div>`;
+    document.getElementById("resultsCount").textContent = "No results found";
+    return;
+  }
+  list.forEach(b => grid.appendChild(buildCard(b)));
+  const catLabel = document.querySelector(".chip[data-cat].on")?.textContent.trim() || "all";
+  document.getElementById("resultsCount").textContent =
+    `Showing ${list.length} business${list.length !== 1 ? "es" : ""}`;
+}
+
+function getFiltered() {
+  const query   = document.getElementById("searchInput").value.toLowerCase().trim();
+  const cat     = document.querySelector(".chip[data-cat].on")?.dataset.cat || "all";
+  const sort    = document.getElementById("sortSelect").value;
+
+  let list = [...BUSINESSES];
+
+  // category filter
+  if (cat !== "all") list = list.filter(b => b.category === cat);
+
+  // search filter
+  if (query) {
+    list = list.filter(b =>
+      b.name.toLowerCase().includes(query) ||
+      b.type.toLowerCase().includes(query) ||
+      b.neighbourhood.toLowerCase().includes(query) ||
+      b.tags.some(t => t.toLowerCase().includes(query)) ||
+      b.desc.toLowerCase().includes(query)
+    );
+  }
+
+  // sort
+  if (sort === "rating")   list.sort((a,b) => b.rating - a.rating);
+  if (sort === "reviews")  list.sort((a,b) => b.reviews - a.reviews);
+  if (sort === "name")     list.sort((a,b) => a.name.localeCompare(b.name));
+  if (sort === "promo")    list.sort((a,b) => b.hasPromo - a.hasPromo);
+  if (sort === "featured") list.sort((a,b) => (b.hasPromo - a.hasPromo) || (b.rating - a.rating));
+
+  return list;
+}
+
+// Event listeners
+document.getElementById("searchInput").addEventListener("input", () => renderCards(getFiltered()));
+document.getElementById("sortSelect").addEventListener("change", () => renderCards(getFiltered()));
+document.querySelectorAll(".chip[data-cat]").forEach(chip => {
+  chip.addEventListener("click", function() {
+    document.querySelectorAll(".chip[data-cat]").forEach(c => c.classList.remove("on"));
+    this.classList.add("on");
+    renderCards(getFiltered());
+  });
+});
+
+// Initial render
+renderCards(getFiltered());
+document.getElementById("total-count").textContent = BUSINESSES.length;
+</script>
+</body>
+</html>
