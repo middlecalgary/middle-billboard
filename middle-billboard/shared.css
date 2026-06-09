@@ -125,6 +125,18 @@ body {
 }
 
 /* ── BILLBOARD GRID ── */
+/*
+  col  = 23.6875vw
+  row  = 14.5vw
+  gap  = 0.75vw
+  pad  = 1.5vw each side
+
+  Design sizes:
+    Small    → 900  × 560px
+    MD Wide  → 1880 × 560px
+    MD Tall  → 900  × 1150px
+    Large    → 1880 × 1150px
+*/
 .billboard-grid {
   display: grid;
   grid-template-columns: repeat(4, 23.6875vw);
@@ -213,7 +225,16 @@ body {
 .t.avail:hover .avail-label { color: var(--orange); }
 .avail-price { font-size: clamp(6px,.55vw,9px); color: #d0d0cc; }
 
-/* ── MOBILE (max-width: 600px) ── */
+/* ── MOBILE (≤600px) ── */
+/*
+  2-col grid with fixed row height.
+  Tile spans control visual size — no gray gaps.
+
+    lg    → 2 cols × 2 rows  biggest block
+    md-h  → 2 cols × 1 row   wide strip
+    md-v  → 1 col  × 2 rows  tall card, no gap beside sm
+    sm    → 1 col  × 1 row   compact card
+*/
 @media (max-width: 600px) {
   .site-nav { padding: 0 16px; height: 56px; }
   .nav-links { display: none; }
@@ -222,7 +243,7 @@ body {
 
   .billboard-grid {
     grid-template-columns: 1fr 1fr;
-    grid-auto-rows: auto;
+    grid-auto-rows: 130px;
     gap: 8px;
   }
 
@@ -236,21 +257,17 @@ body {
     position: relative;
   }
 
-  .t[data-size="lg"]  { grid-column: span 2 !important; grid-row: span 1 !important; }
-  .t[data-size="md-h"]{ grid-column: span 2 !important; grid-row: span 1 !important; }
-  .t[data-size="md-v"]{ grid-column: span 1 !important; grid-row: span 1 !important; }
-  .t[data-size="sm"]  { grid-column: span 1 !important; grid-row: span 1 !important; }
-
-  .t[data-size="lg"]  .img-wrap { aspect-ratio: 16/9; }
-  .t[data-size="md-h"] .img-wrap { aspect-ratio: 16/9; }
-  .t[data-size="md-v"] .img-wrap { aspect-ratio: 3/4; }
-  .t[data-size="sm"]  .img-wrap { aspect-ratio: 4/3; }
+  .t[data-size="lg"]   { grid-column: span 2 !important; grid-row: span 2 !important; }
+  .t[data-size="md-h"] { grid-column: span 2 !important; grid-row: span 1 !important; }
+  .t[data-size="md-v"] { grid-column: span 1 !important; grid-row: span 2 !important; }
+  .t[data-size="sm"]   { grid-column: span 1 !important; grid-row: span 1 !important; }
 
   .t .img-wrap {
     position: relative;
     inset: unset;
     width: 100%;
-    flex-shrink: 0;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
   }
   .t .img-wrap img {
@@ -285,7 +302,7 @@ body {
   .t:hover { transform: none; box-shadow: none; }
   .t:hover .img-wrap img { transform: none; }
 
-  .t.avail { min-height: 80px; justify-content: center; }
+  .t.avail { justify-content: center; }
   .t.avail .img-wrap { display: none; }
   .t.avail .lbl { display: none; }
   .avail-plus  { font-size: 18px; }
