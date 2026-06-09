@@ -1,527 +1,88 @@
-/* ════════════════════════════════════════════
-   MIDDLE CALGARY — shared.css
-   Imported by every page
-   ════════════════════════════════════════════ */
+// ─────────────────────────────────────────────
+// MIDDLE CALGARY — shared.js
+// Injects nav + footer into every page
+// ─────────────────────────────────────────────
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+const LOGO_SVG = `<a href="/index.html" class="logo-link">
+  <img src="/assets/logo.png" alt="Middle Calgary" class="logo-img">
+</a>`;
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --orange:    #ff5c3a;
-  --orange-dk: #e5472a;
-  --navy:      #1a2744;
-  --dark:      #1a1a1a;
-  --mid:       #888;
-  --light:     #ebebeb;
-  --bg:        #fafaf8;
-  --white:     #ffffff;
-  --radius-sm: 10px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --shadow:    0 8px 32px rgba(0,0,0,.09);
+function getNavHTML(activePage) {
+  const pages = [
+    { href: "/index.html",          label: "Discover",       id: "discover"  },
+    { href: "/category/food-drink.html", label: "Food & Drink",   id: "food"     },
+    { href: "/category/events.html",     label: "Events",         id: "events"   },
+    { href: "/category/wellness.html",   label: "Wellness",       id: "wellness" },
+    { href: "/category/shopping.html",   label: "Shopping",       id: "shopping" },
+    { href: "/directory.html",           label: "Directory",      id: "directory"},
+  ];
+  const links = pages.map(p => {
+    const active = p.id === activePage ? "active" : "";
+    return `<a href="${p.href}" class="nav-link ${active}">${p.label}</a>`;
+  }).join("");
+  return `
+    <nav class="site-nav">
+      <a href="/index.html" class="logo-link">
+        <img src="/assets/logo.png" alt="Middle" class="logo-img">
+      </a>
+      <div class="nav-links">${links}</div>
+      <a href="/claim.html" class="nav-cta">List your business</a>
+      <button class="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menu">☰</button>
+    </nav>
+    <div class="mobile-nav" id="mobileNav">
+      ${pages.map(p=>`<a href="${p.href}" class="mobile-nav-link">${p.label}</a>`).join("")}
+      <a href="/claim.html" class="mobile-nav-cta">List your business →</a>
+    </div>
+  `;
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--dark);
-  min-height: 100vh;
+function getFooterHTML() {
+  return `
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="/assets/logo.png" alt="Middle" class="footer-logo">
+          <p>Calgary's city billboard.<br>Local deals, events & businesses.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Discover</h4>
+            <a href="/category/food-drink.html">Food & Drink</a>
+            <a href="/category/events.html">Events</a>
+            <a href="/category/wellness.html">Wellness</a>
+            <a href="/category/shopping.html">Shopping</a>
+          </div>
+          <div class="footer-col">
+            <h4>Platform</h4>
+            <a href="/directory.html">Directory</a>
+            <a href="/claim.html">List your business</a>
+            <a href="/claim.html">Advertise</a>
+          </div>
+          <div class="footer-col">
+            <h4>Contact</h4>
+            <a href="mailto:hello@middlecalgary.ca">hello@middlecalgary.ca</a>
+            <a href="#">Instagram</a>
+            <a href="#">Facebook</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Middle Calgary. All rights reserved.</span>
+        <span>Made in Calgary 🤠</span>
+      </div>
+    </footer>
+  `;
 }
 
-/* ── NAV ── */
-.site-nav {
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  background: white;
-  border-bottom: 1px solid var(--light);
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  gap: 16px;
+function toggleMobileNav() {
+  document.getElementById("mobileNav").classList.toggle("open");
 }
 
-.logo-link { display: flex; align-items: center; flex-shrink: 0; }
-.logo-img   { height: 32px; width: auto; display: block; }
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  flex: 1;
-  justify-content: center;
+function injectNav(activePage) {
+  document.getElementById("nav-placeholder").innerHTML = getNavHTML(activePage);
 }
 
-.nav-link {
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--mid);
-  text-decoration: none;
-  padding: 7px 14px;
-  border-radius: var(--radius-lg);
-  transition: all .15s;
-  white-space: nowrap;
-}
-.nav-link:hover  { color: var(--dark); background: #f5f5f3; }
-.nav-link.active { color: var(--dark); font-weight: 700; background: #f0f0ee; }
-
-.nav-cta {
-  flex-shrink: 0;
-  font-size: 13px;
-  font-weight: 700;
-  color: white;
-  background: var(--dark);
-  text-decoration: none;
-  padding: 9px 18px;
-  border-radius: var(--radius-lg);
-  white-space: nowrap;
-  transition: background .15s;
-}
-.nav-cta:hover { background: #333; }
-
-.nav-hamburger {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-  color: var(--dark);
-  padding: 4px;
-}
-
-/* mobile nav drawer */
-.mobile-nav {
-  display: none;
-  flex-direction: column;
-  background: white;
-  border-bottom: 1px solid var(--light);
-  padding: 12px 24px 20px;
-  gap: 4px;
-  position: sticky;
-  top: 64px;
-  z-index: 199;
-}
-.mobile-nav.open { display: flex; }
-.mobile-nav-link {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--dark);
-  text-decoration: none;
-  padding: 10px 4px;
-  border-bottom: 1px solid #f5f5f3;
-}
-.mobile-nav-cta {
-  margin-top: 10px;
-  font-size: 14px;
-  font-weight: 700;
-  color: white;
-  background: var(--orange);
-  text-decoration: none;
-  padding: 12px 20px;
-  border-radius: var(--radius-lg);
-  text-align: center;
-}
-
-/* ── BILLBOARD GRID (vw-based, proportional) ── */
-/*
-  col  = 23.6875vw
-  row  = 14.5vw
-  gap  = 0.75vw
-  pad  = 1.5vw each side
-
-  Tile design sizes:
-    Small    → 900  × 560px
-    MD Wide  → 1880 × 560px
-    MD Tall  → 900  × 1150px
-    Large    → 1880 × 1150px
-*/
-.billboard-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 23.6875vw);
-  grid-auto-rows: 14.5vw;
-  gap: 0.75vw;
-}
-
-/* tile sizes */
-.t[data-size="lg"]   { grid-column: span 2; grid-row: span 2; }
-.t[data-size="md-h"] { grid-column: span 2; grid-row: span 1; }
-.t[data-size="md-v"] { grid-column: span 1; grid-row: span 2; }
-.t[data-size="sm"]   { grid-column: span 1; grid-row: span 1; }
-
-/* tile base */
-.t {
-  border-radius: 0.7vw;
-  overflow: hidden;
-  position: relative;
-  cursor: pointer;
-  background: #f0f0ee;
-  border: 1.5px solid var(--light);
-  transition: box-shadow .22s, transform .2s;
-  min-width: 0;
-  text-decoration: none;
-  display: block;
-}
-.t:hover {
-  box-shadow: 0 0.6vw 2.2vw rgba(0,0,0,.15);
-  transform: translateY(-0.2vw);
-  z-index: 10;
-}
-
-/* desktop: image fills full tile */
-.t .img-wrap {
-  position: absolute;
-  inset: 0;
-}
-.t .img-wrap img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform .35s;
-}
-.t:hover .img-wrap img { transform: scale(1.04); }
-
-/* sticker badge */
-.t .stk {
-  position: absolute;
-  top: 0.5vw; right: 0.5vw;
-  z-index: 3;
-  font-size: clamp(7px, .6vw, 10px);
-  font-weight: 800;
-  padding: 0.18vw 0.55vw;
-  border-radius: 2vw;
-}
-.stk-o { background: var(--orange); color: white; }
-.stk-g { background: #dcfce7; color: #166634; }
-.stk-r { background: #dc2626; color: white; }
-.stk-b { background: #dbeafe; color: #1e40af; }
-.stk-y { background: #fef08a; color: #713f12; }
-
-/* hover label — slides up on desktop */
-.t .lbl {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(255,255,255,.95);
-  backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(0,0,0,.06);
-  padding: 0.5vw 0.7vw;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transform: translateY(100%);
-  transition: transform .2s;
-  z-index: 3;
-}
-.t:hover .lbl { transform: translateY(0); }
-.t .ln { font-size: clamp(8px,.7vw,12px); font-weight: 700; color: var(--dark); line-height: 1.3; }
-.t .lc { font-size: clamp(7px,.65vw,11px); font-weight: 700; color: var(--orange); white-space: nowrap; margin-left: .4vw; flex-shrink: 0; }
-
-/* available tile */
-.t.avail {
-  border: 0.12vw dashed #e0e0dc !important;
-  background: #f7f7f4 !important;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 0.25vw;
-  cursor: pointer;
-}
-.t.avail:hover { border-color: var(--orange) !important; background: #fff8f6 !important; box-shadow: none !important; transform: none !important; }
-.t.avail .img-wrap { display: none; }
-.t.avail .lbl { display: none; }
-.avail-plus { font-size: clamp(10px,1.3vw,20px); color: #d8d8d4; line-height: 1; }
-.t.avail:hover .avail-plus { color: var(--orange); }
-.avail-label { font-size: clamp(6px,.55vw,9px); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #ccc; }
-.t.avail:hover .avail-label { color: var(--orange); }
-.avail-price { font-size: clamp(6px,.55vw,9px); color: #d0d0cc; }
-
-/* ── MOBILE GRID (≤600px) ── */
-/*
-  2-column layout. Each tile = flex column (image on top, label strip below).
-  Image aspect ratio drives height — so bigger tiles are visually taller.
-
-  Size mapping:
-    lg    → full width (2 cols), image 16/9  → widest + tallest
-    md-h  → full width (2 cols), image 16/9  → full width strip
-    md-v  → half width (1 col),  image 9/16  → tall portrait card
-    sm    → half width (1 col),  image 4/3   → compact square-ish card
-
-  Label strip = 30px fixed below image on all tiles.
-  This means lg > md-h > md-v > sm in visual weight. ✓
-*/
-@media (max-width: 600px) {
-  .site-nav { padding: 0 16px; height: 56px; }
-  .nav-links { display: none; }
-  .nav-cta { display: none; }
-  .nav-hamburger { display: block; }
-
-  .billboard-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-auto-rows: auto;   /* height driven by content, not fixed rows */
-    gap: 8px;
-  }
-
-  /* reset desktop explicit placements */
-  .t {
-    grid-column: unset !important;
-    grid-row: unset !important;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-  }
-
-  /* ── SIZE MAPPING ── */
-  /* Large: full width, 16:9 image → biggest tile */
-  .t[data-size="lg"] {
-    grid-column: span 2;
-  }
-  .t[data-size="lg"] .img-wrap {
-    aspect-ratio: 16/9;
-  }
-
-  /* Medium Wide: full width, 16:9 → same width as lg, same image ratio */
-  .t[data-size="md-h"] {
-    grid-column: span 2;
-  }
-  .t[data-size="md-h"] .img-wrap {
-    aspect-ratio: 16/9;
-  }
-
-  /* Medium Tall: half width, portrait → clearly taller than sm */
-  .t[data-size="md-v"] {
-    grid-column: span 1;
-  }
-  .t[data-size="md-v"] .img-wrap {
-    aspect-ratio: 3/4;
-  }
-
-  /* Small: half width, landscape → compact card */
-  .t[data-size="sm"] {
-    grid-column: span 1;
-  }
-  .t[data-size="sm"] .img-wrap {
-    aspect-ratio: 4/3;
-  }
-
-  /* ── IMAGE WRAP ── */
-  .t .img-wrap {
-    position: relative;
-    inset: unset;
-    width: 100%;
-    flex-shrink: 0;
-    overflow: hidden;
-  }
-  .t .img-wrap img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* ── LABEL — always visible below image ── */
-  .t .lbl {
-    position: static;
-    transform: none !important;
-    backdrop-filter: none;
-    background: white;
-    border-top: 1px solid #f0f0ee;
-    padding: 7px 9px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-    min-height: 30px;
-  }
-  .t .ln {
-    font-size: 10.5px;
-    font-weight: 700;
-    color: var(--dark);
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
-  }
-  .t .lc {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--orange);
-    white-space: nowrap;
-    margin-left: 6px;
-    flex-shrink: 0;
-  }
-
-  .t .stk { font-size: 9px; padding: 3px 8px; top: 8px; right: 8px; border-radius: 12px; }
-  .t:hover { transform: none; box-shadow: none; }
-  .t:hover .img-wrap img { transform: none; }
-
-  /* available tiles */
-  .t.avail {
-    min-height: 80px;
-    justify-content: center;
-  }
-  .t.avail .img-wrap { display: none; }
-  .t.avail .lbl { display: none; }
-  .avail-plus  { font-size: 18px; }
-  .avail-label { font-size: 9px; }
-  .avail-price { font-size: 9px; }
-}
-
-/* ── CHIPS ── */
-.chips {
-  display: flex; gap: 8px;
-  overflow-x: auto; scrollbar-width: none;
-  flex-wrap: nowrap;
-}
-.chips::-webkit-scrollbar { display: none; }
-.chip {
-  flex-shrink: 0;
-  padding: 7px 16px;
-  border-radius: 24px;
-  font-size: 13px; font-weight: 500;
-  border: 1.5px solid var(--light);
-  background: white; color: var(--mid);
-  cursor: pointer; transition: all .15s;
-  white-space: nowrap; font-family: inherit;
-}
-.chip:hover { border-color: #ccc; color: var(--dark); }
-.chip.on { background: var(--dark); color: white; border-color: var(--dark); }
-
-/* ── BUTTONS ── */
-.btn-primary {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--orange); color: white; border: none;
-  padding: 12px 24px; border-radius: var(--radius-lg);
-  font-size: 14px; font-weight: 700; cursor: pointer;
-  font-family: inherit; text-decoration: none;
-  transition: background .15s;
-}
-.btn-primary:hover { background: var(--orange-dk); }
-
-.btn-secondary {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: white; color: var(--dark);
-  border: 1.5px solid var(--light);
-  padding: 11px 22px; border-radius: var(--radius-lg);
-  font-size: 14px; font-weight: 600; cursor: pointer;
-  font-family: inherit; text-decoration: none;
-  transition: all .15s;
-}
-.btn-secondary:hover { border-color: #ccc; background: #f8f8f6; }
-
-.btn-dark {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--dark); color: white; border: none;
-  padding: 12px 24px; border-radius: var(--radius-lg);
-  font-size: 14px; font-weight: 700; cursor: pointer;
-  font-family: inherit; text-decoration: none;
-  transition: background .15s;
-}
-.btn-dark:hover { background: #333; }
-
-/* ── FOOTER ── */
-.site-footer {
-  background: var(--dark);
-  color: rgba(255,255,255,.7);
-  margin-top: 80px;
-}
-.footer-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 56px 40px 40px;
-  display: flex;
-  gap: 60px;
-  align-items: flex-start;
-}
-.footer-brand {
-  flex-shrink: 0; max-width: 220px;
-}
-.footer-logo {
-  height: 28px; width: auto;
-  margin-bottom: 14px;
-  filter: brightness(0) invert(1);
-  opacity: .8;
-}
-.footer-brand p { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.45); }
-.footer-links {
-  display: flex; gap: 48px; flex: 1;
-  flex-wrap: wrap;
-}
-.footer-col { display: flex; flex-direction: column; gap: 10px; min-width: 100px; }
-.footer-col h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.4); margin-bottom: 4px; }
-.footer-col a { font-size: 13.5px; color: rgba(255,255,255,.6); text-decoration: none; transition: color .15s; }
-.footer-col a:hover { color: white; }
-.footer-bottom {
-  max-width: 1200px; margin: 0 auto;
-  padding: 20px 40px;
-  border-top: 1px solid rgba(255,255,255,.08);
-  display: flex; align-items: center; justify-content: space-between;
-  font-size: 12.5px; color: rgba(255,255,255,.3);
-}
-
-/* ── BIZ CARD (directory + category pages) ── */
-.biz-card {
-  background: white;
-  border: 1.5px solid var(--light);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  cursor: pointer;
-  transition: box-shadow .2s, transform .18s;
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-.biz-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
-.biz-card-img {
-  width: 100%; aspect-ratio: 16/9;
-  background: #f0f0ee;
-  position: relative; overflow: hidden;
-}
-.biz-card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s; }
-.biz-card:hover .biz-card-img img { transform: scale(1.04); }
-.biz-card-img .badge {
-  position: absolute; top: 10px; left: 10px;
-  font-size: 10px; font-weight: 700;
-  padding: 3px 9px; border-radius: 20px;
-}
-.badge-promo { background: var(--orange); color: white; }
-.badge-open  { background: #dcfce7; color: #166634; }
-.badge-new   { background: #dbeafe; color: #1e40af; }
-.biz-card-body { padding: 14px 16px 16px; }
-.biz-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
-.biz-name { font-size: 15px; font-weight: 700; letter-spacing: -.2px; margin-bottom: 2px; }
-.biz-type { font-size: 12px; color: var(--mid); }
-.biz-rating { display: flex; align-items: center; gap: 3px; flex-shrink: 0; margin-left: 8px; }
-.stars { color: #f59e0b; font-size: 12px; }
-.rat   { font-size: 12.5px; font-weight: 700; }
-.rev   { font-size: 11px; color: #bbb; }
-.biz-desc {
-  font-size: 13px; color: #666; line-height: 1.5;
-  margin-bottom: 10px;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
-.biz-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
-.meta-pill { font-size: 11.5px; color: var(--mid); display: flex; align-items: center; gap: 4px; }
-.open-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
-.biz-promo-strip {
-  background: #fff8f6; border: 1px solid #fde8e4;
-  border-radius: 10px; padding: 8px 12px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.biz-promo-text { font-size: 12px; font-weight: 600; color: var(--orange); }
-.biz-promo-cta  { font-size: 11px; font-weight: 700; color: var(--orange); flex-shrink: 0; margin-left: 8px; }
-
-/* ── UTILITIES ── */
-.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; flex-shrink: 0; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-.section-divider { height: 1px; background: var(--light); margin: 32px 0; }
-
-@media (max-width: 600px) {
-  .footer-inner { flex-direction: column; gap: 32px; padding: 40px 24px 28px; }
-  .footer-links { gap: 28px; }
-  .footer-bottom { padding: 16px 24px; flex-direction: column; gap: 6px; text-align: center; }
+function injectFooter() {
+  const el = document.getElementById("footer-placeholder");
+  if (el) el.innerHTML = getFooterHTML();
 }
