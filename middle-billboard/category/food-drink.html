@@ -52,12 +52,6 @@
 .section-head a { font-size: 13px; color: var(--orange); text-decoration: none; font-weight: 500; }
 
 .mini-board { padding: 0 40px; }
-.mini-billboard-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 23.6875vw);
-  grid-auto-rows: 14.5vw;
-  gap: 0.75vw;
-}
 
 .section-divider { height: 1px; background: var(--light); margin: 32px 40px 0; }
 
@@ -87,14 +81,6 @@
   .subcat-row { padding: 14px 24px 0; }
   .section-head { padding: 20px 24px 12px; }
   .mini-board { padding: 0 24px; }
-  .mini-billboard-grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: auto;
-    gap: 8px;
-  }
-  .t { grid-column: unset !important; grid-row: unset !important; }
-  .t[data-size="lg"], .t[data-size="md-h"] { grid-column: span 2; }
-  .t[data-size="md-v"], .t[data-size="sm"] { grid-column: span 1; }
   .sort-row { padding: 16px 24px 12px; }
   .biz-grid { padding: 0 24px 40px; grid-template-columns: repeat(2, 1fr); }
 }
@@ -111,14 +97,12 @@
 <body>
 <div id="nav-placeholder"></div>
 
-<!-- BREADCRUMB -->
 <div class="bc">
   <a href="../index.html">Home</a>
   <span>/</span>
   <span class="bc-cur">Food & Drink</span>
 </div>
 
-<!-- HERO -->
 <div class="cat-hero">
   <div class="cat-hero-left">
     <div class="cat-icon">🍔</div>
@@ -136,7 +120,6 @@
   </div>
 </div>
 
-<!-- SUB-CATEGORY CHIPS -->
 <div class="subcat-row">
   <span class="subcat-label">Filter</span>
   <div class="subcat-chips chips">
@@ -151,22 +134,20 @@
   </div>
 </div>
 
-<!-- FEATURED PROMOS -->
 <div class="section-head">
   <div class="section-head-left">
     <h2>Featured Promotions</h2>
-    <span class="section-badge" id="promo-count">24 live deals</span>
+    <span class="section-badge">24 live deals</span>
   </div>
   <a href="../directory.html">See all in Directory →</a>
 </div>
 
 <div class="mini-board">
-  <div class="mini-billboard-grid" id="miniBillboard"></div>
+  <div class="billboard-grid" id="miniBillboard"></div>
 </div>
 
 <div class="section-divider"></div>
 
-<!-- DIRECTORY -->
 <div class="sort-row">
   <span class="results-count" id="resultsCount">Loading...</span>
   <select class="sort-select" id="sortSelect">
@@ -191,28 +172,19 @@ injectFooter();
 const CAT_FILTER = "food";
 const BIZ_EMOJIS = { food:"🍔", events:"🎉", wellness:"🧘", shopping:"🛍️", services:"🔧" };
 
-// ── MINI BILLBOARD ──
-// Show up to 6 ads from this category in the mini grid
+const MINI_SIZES = ["lg", "md-v", "sm", "sm", "md-h", "sm"];
 const catAds = getAdsByCategory(CAT_FILTER).slice(0, 6);
-
-// Mini billboard layout positions (6 tiles)
-const MINI_LAYOUT_COLS = ["1/span 2","3","4","1","2/span 2","3"];
-const MINI_LAYOUT_ROWS = ["1/span 2","1","1","2","2","2"];
-const MINI_SIZES       = ["lg","sm","sm","sm","md-h","sm"];
-
 const miniBB = document.getElementById("miniBillboard");
 
 catAds.forEach((ad, i) => {
   const a = document.createElement("a");
   a.href = "../" + ad.promoUrl;
   a.className = "t";
-  a.setAttribute("data-size", i === 0 ? "lg" : i === 4 ? "md-h" : "sm");
-  a.style.gridColumn = MINI_LAYOUT_COLS[i] || "auto";
-  a.style.gridRow    = MINI_LAYOUT_ROWS[i] || "auto";
+  a.setAttribute("data-size", MINI_SIZES[i] || "sm");
   const badge = ad.badge ? `<div class="stk ${ad.badge.cls}">${ad.badge.text}</div>` : "";
   a.innerHTML = `
     <div class="img-wrap">
-      <img src="../${ad.img.startsWith("data:") ? ad.img.slice(0) : ad.img}" alt="${ad.business}" style="object-position:${ad.imgPos};" loading="lazy">
+      <img src="${ad.img}" alt="${ad.business}" style="object-position:${ad.imgPos};" loading="lazy">
       ${badge}
     </div>
     <div class="lbl">
@@ -220,25 +192,18 @@ catAds.forEach((ad, i) => {
       <span class="lc">${ad.cta} →</span>
     </div>
   `;
-  // Fix: image src already contains full data uri
-  const img = a.querySelector("img");
-  img.src = ad.img;
   miniBB.appendChild(a);
 });
 
-// If fewer than 6 ads, fill with available slot
-for (let i = catAds.length; i < Math.min(6, 3); i++) {
+for (let i = catAds.length; i < 6; i++) {
   const av = document.createElement("a");
   av.href = "../claim.html";
   av.className = "t avail";
-  av.setAttribute("data-size", "sm");
-  av.style.gridColumn = MINI_LAYOUT_COLS[i] || "auto";
-  av.style.gridRow    = MINI_LAYOUT_ROWS[i] || "auto";
+  av.setAttribute("data-size", MINI_SIZES[i] || "sm");
   av.innerHTML = `<div class="avail-plus">+</div><div class="avail-label">Your Ad</div><div class="avail-price">From $49</div>`;
   miniBB.appendChild(av);
 }
 
-// ── DIRECTORY ──
 function buildCard(biz) {
   const ad = biz.adId ? getAd(biz.adId) : null;
   const img = ad
@@ -254,10 +219,6 @@ function buildCard(biz) {
   const a = document.createElement("a");
   a.href = `../business/${biz.id}.html`;
   a.className = "biz-card";
-  a.setAttribute("data-rating", biz.rating);
-  a.setAttribute("data-reviews", biz.reviews);
-  a.setAttribute("data-promo", biz.hasPromo ? "1" : "0");
-  a.setAttribute("data-name", biz.name.toLowerCase());
   a.innerHTML = `
     <div class="biz-card-img">${img}${badge}</div>
     <div class="biz-card-body">
