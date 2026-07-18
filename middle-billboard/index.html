@@ -6,64 +6,34 @@
 <title>Middle Calgary — City Billboard</title>
 <link rel="stylesheet" href="shared.css">
 <style>
-/* ── PAGE-SPECIFIC STYLES ── */
 .page-header {
-  padding: 20px 1.5vw 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  padding: 20px 1.5vw 14px;
 }
-.page-header-left h1 {
+.page-header h1 {
   font-size: clamp(18px, 1.6vw, 26px);
   font-weight: 900;
   letter-spacing: -.05em;
 }
-.page-header-left p { font-size: clamp(10px, .85vw, 13px); color: var(--mid); margin-top: 3px; }
-.page-header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.live-tag {
-  display: flex; align-items: center; gap: 6px;
-  background: white; border: 1.5px solid var(--light);
-  padding: 6px 14px; border-radius: 24px;
-  font-size: 12px; color: var(--mid); white-space: nowrap;
+.page-header p {
+  font-size: clamp(10px, .85vw, 13px);
+  color: var(--mid);
+  margin-top: 3px;
 }
 
-.filter-row {
-  padding: 14px 1.5vw 0;
-  display: flex; align-items: center; gap: 8px;
-}
-.filter-label { font-size: 11.5px; font-weight: 600; color: #bbb; letter-spacing: .5px; text-transform: uppercase; flex-shrink: 0; }
+.board { padding: 0 1.5vw 20px; }
 
-.board { padding: 12px 1.5vw 20px; }
-
-/* hidden tiles */
 .t.hidden { display: none; }
 
-/* ── MOBILE ── */
-@media (max-width: 600px) {
-  .page-header {
-    padding: 16px 16px 0;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .page-header-left h1 { font-size: 18px; }
-  .page-header-left p  { font-size: 11px; }
-  .live-tag { font-size: 11px; padding: 5px 10px; }
-
-  .filter-row {
-    padding: 10px 16px 0;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .filter-label { font-size: 10px; }
-
-  .board { padding: 8px 10px 16px; }
+@media (max-width: 900px) {
+  .page-header { padding: 20px 24px 14px; }
+  .board { padding: 0 20px 16px; }
 }
 
-@media (max-width: 900px) {
-  .page-header { padding: 20px 24px 0; }
-  .filter-row  { padding: 12px 24px 0; }
-  .board       { padding: 10px 20px 16px; }
+@media (max-width: 600px) {
+  .page-header { padding: 16px 16px 12px; }
+  .page-header h1 { font-size: 18px; }
+  .page-header p  { font-size: 11px; }
+  .board { padding: 0 10px 16px; }
 }
 </style>
 </head>
@@ -71,38 +41,13 @@
 
 <div id="nav-placeholder"></div>
 
-<!-- HEADER -->
 <div class="page-header">
-  <div class="page-header-left">
-    <h1>Calgary's City Billboard</h1>
-    <p>Local deals, events & businesses — updated daily</p>
-  </div>
-  <div class="page-header-right">
-    <div class="live-tag">
-      <div class="live-dot"></div>
-      <span id="live-count">16 live now</span>
-    </div>
-  </div>
+  <h1>Calgary's City Billboard</h1>
+  <p>Local deals, events & businesses — updated daily</p>
 </div>
 
-<!-- CATEGORY FILTER CHIPS -->
-<div class="filter-row">
-  <span class="filter-label">Filter</span>
-  <div class="chips">
-    <button class="chip on" data-filter="all">🏙️ All</button>
-    <button class="chip" data-filter="food">🍔 Food & Drink</button>
-    <button class="chip" data-filter="events">🎉 Events</button>
-    <button class="chip" data-filter="wellness">🧘 Wellness</button>
-    <button class="chip" data-filter="shopping">🛍️ Shopping</button>
-    <button class="chip" data-filter="services">🔧 Services</button>
-  </div>
-</div>
-
-<!-- BILLBOARD GRID -->
 <div class="board">
-  <div class="billboard-grid" id="billboard">
-    <!-- tiles injected by JS from data.js -->
-  </div>
+  <div class="billboard-grid" id="billboard"></div>
 </div>
 
 <div id="footer-placeholder"></div>
@@ -110,17 +55,10 @@
 <script src="data.js"></script>
 <script src="shared.js"></script>
 <script>
-// ── INJECT NAV + FOOTER ──
 injectNav("discover");
 injectFooter();
 
-// ── BUILD BILLBOARD TILES ──
-// Layout: fixed slot positions — content comes from data.js
-// Slots 1–16 + 3 available slots
-
 const LAYOUT = [
-  // [ slot_or_null, col, row ]  — null = available slot
-  // Using explicit grid placement via inline style
   { adId: "brightstar", col: "1/span 2", row: "1/span 2" },
   { adId: "kinjo",      col: "3",        row: "1/span 2" },
   { adId: "gymvmt",     col: "4",        row: "1"        },
@@ -135,13 +73,13 @@ const LAYOUT = [
   { adId: "middle",     col: "1/span 2", row: "6"        },
   { adId: "classpass",  col: "3",        row: "6"        },
   { adId: "lilac",      col: "4",        row: "6"        },
-  { adId: null,         col: "1",        row: "7", avail: true, price: "$49/mo"  },
+  { adId: null,         col: "1",        row: "7", avail: true, price: "$49/mo" },
   { adId: "leopolds",   col: "2/span 2", row: "7"        },
-  { adId: null,         col: "4",        row: "7", avail: true, price: "$49/mo"  },
+  { adId: null,         col: "4",        row: "7", avail: true, price: "$49/mo" },
   { adId: "cowboys",    col: "1",        row: "8/span 2" },
-  { adId: null,         col: "2",        row: "8", avail: true, price: "$79/mo"  },
+  { adId: null,         col: "2",        row: "8", avail: true, price: "$79/mo" },
   { adId: null,         col: "3/span 2", row: "8/span 2", avail: true, price: "$79/mo" },
-  { adId: null,         col: "2",        row: "9", avail: true, price: "$79/mo"  },
+  { adId: null,         col: "2",        row: "9", avail: true, price: "$79/mo" },
 ];
 
 function buildTile(slot) {
@@ -192,28 +130,6 @@ const grid = document.getElementById("billboard");
 LAYOUT.forEach(slot => {
   const el = buildTile(slot);
   if (el) grid.appendChild(el);
-});
-
-// Update live count
-document.getElementById("live-count").textContent =
-  ADS.length + " live now";
-
-// ── CATEGORY FILTER ──
-document.querySelectorAll(".chip[data-filter]").forEach(chip => {
-  chip.addEventListener("click", function() {
-    document.querySelectorAll(".chip[data-filter]").forEach(c => c.classList.remove("on"));
-    this.classList.add("on");
-    const filter = this.dataset.filter;
-
-    document.querySelectorAll(".billboard-grid .t").forEach(tile => {
-      const cat = tile.getAttribute("data-category");
-      if (filter === "all" || cat === filter || cat === "avail") {
-        tile.classList.remove("hidden");
-      } else {
-        tile.classList.add("hidden");
-      }
-    });
-  });
 });
 </script>
 </body>
