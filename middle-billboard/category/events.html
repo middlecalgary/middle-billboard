@@ -6,89 +6,49 @@
 <title>Events — Middle Calgary</title>
 <link rel="stylesheet" href="../shared.css">
 <style>
-.cat-hero {
-  padding: 36px 40px 0;
-  display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
-}
-.cat-hero-left { display: flex; align-items: center; gap: 18px; }
-.cat-icon {
-  width: 60px; height: 60px; border-radius: 18px;
-  background: #6366f118;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; flex-shrink: 0;
-  border: 1.5px solid #6366f130;
-}
-.cat-title h1 { font-size: 28px; font-weight: 900; letter-spacing: -.6px; margin-bottom: 5px; }
-.cat-title p { font-size: 13.5px; color: var(--mid); }
-.cat-stats {
-  display: flex; gap: 20px; align-items: center; flex-shrink: 0;
-  background: white; border: 1.5px solid var(--light);
-  border-radius: 14px; padding: 14px 22px;
-}
-.stat-n { font-size: 22px; font-weight: 900; letter-spacing: -.5px; }
-.stat-l { font-size: 11px; color: var(--mid); margin-top: 2px; }
-.stat-div { width: 1px; height: 30px; background: var(--light); }
-
 .bc { padding: 14px 40px 0; display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: #bbb; }
 .bc a { color: #bbb; text-decoration: none; } .bc a:hover { color: var(--dark); }
 .bc-cur { color: var(--dark); font-weight: 500; }
-
-.subcat-row { padding: 20px 40px 0; display: flex; gap: 8px; align-items: center; }
-.subcat-label { font-size: 11.5px; font-weight: 600; color: #bbb; text-transform: uppercase; letter-spacing: .5px; flex-shrink: 0; margin-right: 4px; }
-.subcat-chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
-.subcat-chips::-webkit-scrollbar { display: none; }
-
-.section-head {
-  padding: 28px 40px 14px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.section-head-left { display: flex; align-items: center; gap: 10px; }
+.cat-hero { padding: 28px 40px 0; display: flex; align-items: center; gap: 18px; }
+.cat-icon { width: 56px; height: 56px; border-radius: 16px; background: #6366f118; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; border: 1.5px solid #6366f130; }
+.cat-title h1 { font-size: 26px; font-weight: 900; letter-spacing: -.6px; margin-bottom: 4px; }
+.cat-title p  { font-size: 13px; color: var(--mid); }
+.section-head { padding: 32px 40px 16px; display: flex; align-items: center; justify-content: space-between; }
 .section-head h2 { font-size: 17px; font-weight: 800; letter-spacing: -.3px; }
-.section-badge {
-  font-size: 11px; font-weight: 700;
-  background: #fff0ee; color: var(--orange);
-  padding: 3px 10px; border-radius: 20px;
-}
-.section-head a { font-size: 13px; color: var(--orange); text-decoration: none; font-weight: 500; }
-
-.mini-board { padding: 0 40px; }
-
+.slideshow-wrap { padding: 0 40px; position: relative; }
+.slideshow { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 16/7; background: #f0f0ee; cursor: pointer; }
+.slide { position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease; text-decoration: none; display: block; }
+.slide.active { opacity: 1; }
+.slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slide-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,.95); backdrop-filter: blur(8px); border-top: 1px solid rgba(0,0,0,.06); padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; }
+.slide-label-name { font-size: 14px; font-weight: 700; color: var(--dark); }
+.slide-label-cta  { font-size: 13px; font-weight: 700; color: var(--orange); flex-shrink: 0; margin-left: 12px; }
+.slide-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,.92); border: none; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 2px 12px rgba(0,0,0,.12); transition: background .15s; }
+.slide-arrow:hover { background: white; }
+.slide-arrow.prev { left: 52px; }
+.slide-arrow.next { right: 52px; }
+.slide-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--light); cursor: pointer; transition: background .2s; border: none; }
+.dot.active { background: var(--dark); }
 .section-divider { height: 1px; background: var(--light); margin: 32px 40px 0; }
-
-.sort-row {
-  padding: 20px 40px 14px;
-  display: flex; align-items: center; justify-content: space-between;
-}
+.sort-row { padding: 20px 40px 14px; display: flex; align-items: center; justify-content: space-between; }
 .results-count { font-size: 13.5px; color: var(--mid); }
-.sort-select {
-  font-size: 13px; font-weight: 600; color: var(--dark);
-  border: 1.5px solid var(--light); background: white;
-  padding: 9px 36px 9px 14px; border-radius: 22px;
-  cursor: pointer; font-family: inherit; outline: none; appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 12px center;
-}
-
-.biz-grid {
-  padding: 0 40px 60px;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-}
-.biz-card.hidden { display: none; }
-
+.sort-select { font-size: 13px; font-weight: 600; color: var(--dark); border: 1.5px solid var(--light); background: white; padding: 9px 36px 9px 14px; border-radius: 22px; cursor: pointer; font-family: inherit; outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.biz-grid { padding: 0 40px 60px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 @media (max-width: 900px) {
-  .cat-hero { flex-direction: column; align-items: flex-start; padding: 24px 24px 0; }
-  .cat-stats { display: none; }
-  .subcat-row { padding: 14px 24px 0; }
-  .section-head { padding: 20px 24px 12px; }
-  .mini-board { padding: 0 24px; }
+  .bc, .cat-hero { padding-left: 24px; padding-right: 24px; }
+  .section-head { padding: 24px 24px 14px; }
+  .slideshow-wrap { padding: 0 24px; }
+  .slide-arrow.prev { left: 36px; } .slide-arrow.next { right: 36px; }
   .sort-row { padding: 16px 24px 12px; }
   .biz-grid { padding: 0 24px 40px; grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 600px) {
-  .cat-hero { padding: 16px 16px 0; }
-  .subcat-row { padding: 12px 16px 0; }
-  .section-head { padding: 18px 16px 10px; }
-  .mini-board { padding: 0 10px; }
+  .bc, .cat-hero { padding-left: 16px; padding-right: 16px; }
+  .section-head { padding: 20px 16px 12px; }
+  .slideshow-wrap { padding: 0 10px; }
+  .slide-arrow.prev { left: 18px; } .slide-arrow.next { right: 18px; }
+  .slide-arrow { width: 32px; height: 32px; font-size: 13px; }
   .sort-row { padding: 14px 16px 10px; }
   .biz-grid { padding: 0 16px 32px; grid-template-columns: 1fr; }
 }
@@ -98,51 +58,25 @@
 <div id="nav-placeholder"></div>
 
 <div class="bc">
-  <a href="../index.html">Home</a>
-  <span>/</span>
+  <a href="../index.html">Home</a><span>/</span>
   <span class="bc-cur">Events</span>
 </div>
 
 <div class="cat-hero">
-  <div class="cat-hero-left">
-    <div class="cat-icon">🎉</div>
-    <div class="cat-title">
-      <h1>Events</h1>
-      <p>Concerts, festivals, markets, and things to do in Calgary</p>
-    </div>
-  </div>
-  <div class="cat-stats">
-    <div><div class="stat-n">42</div><div class="stat-l">Businesses</div></div>
-    <div class="stat-div"></div>
-    <div><div class="stat-n">18</div><div class="stat-l">Active promos</div></div>
-    <div class="stat-div"></div>
-    <div><div class="stat-n">4.8★</div><div class="stat-l">Avg rating</div></div>
+  <div class="cat-icon">🎉</div>
+  <div class="cat-title">
+    <h1>Events</h1>
+    <p>Concerts, festivals, markets, and things to do in Calgary</p>
   </div>
 </div>
 
-<div class="subcat-row">
-  <span class="subcat-label">Filter</span>
-  <div class="subcat-chips chips">
-    <button class="chip on">All</button>
-    <button class="chip">🎵 Music</button>
-    <button class="chip">🎪 Festivals</button>
-    <button class="chip">🛍️ Markets</button>
-    <button class="chip">🎭 Arts</button>
-    <button class="chip">🏟️ Sports</button>
-    <button class="chip">👨‍👩‍👧 Family</button>
-  </div>
-</div>
+<div class="section-head"><h2>Featured Promotions</h2></div>
 
-<div class="section-head">
-  <div class="section-head-left">
-    <h2>Featured Promotions</h2>
-    <span class="section-badge">18 live deals</span>
-  </div>
-  <a href="../directory.html">See all in Directory →</a>
-</div>
-
-<div class="mini-board">
-  <div class="billboard-grid" id="miniBillboard"></div>
+<div class="slideshow-wrap">
+  <div class="slideshow" id="slideshow"></div>
+  <button class="slide-arrow prev" onclick="moveSlide(-1)">&#8592;</button>
+  <button class="slide-arrow next" onclick="moveSlide(1)">&#8594;</button>
+  <div class="slide-dots" id="slideDots"></div>
 </div>
 
 <div class="section-divider"></div>
@@ -159,7 +93,6 @@
 </div>
 
 <div class="biz-grid" id="bizGrid"></div>
-
 <div id="footer-placeholder"></div>
 
 <script src="../data.js"></script>
@@ -171,54 +104,48 @@ injectFooter();
 const CAT_FILTER = "events";
 const BIZ_EMOJIS = { food:"🍔", events:"🎉", wellness:"🧘", shopping:"🛍️", services:"🔧" };
 
-// ── MINI BILLBOARD ──
-// Fixed layout: slot 0 = lg, slot 1 = md-v, slot 2 = sm, slot 3 = sm, slot 4 = md-h, slot 5 = sm
-const MINI_SIZES = ["lg", "md-v", "sm", "sm", "md-h", "sm"];
-const catAds = getAdsByCategory(CAT_FILTER).slice(0, 6);
-const miniBB = document.getElementById("miniBillboard");
+const catAds = getAdsByCategory(CAT_FILTER);
+const slideshow = document.getElementById("slideshow");
+const dotsEl = document.getElementById("slideDots");
+let current = 0, timer;
 
 catAds.forEach((ad, i) => {
   const a = document.createElement("a");
   a.href = "../" + ad.promoUrl;
-  a.className = "t";
-  a.setAttribute("data-size", MINI_SIZES[i] || "sm");
-  const badge = ad.badge ? `<div class="stk ${ad.badge.cls}">${ad.badge.text}</div>` : "";
+  a.className = "slide" + (i === 0 ? " active" : "");
   a.innerHTML = `
-    <div class="img-wrap">
-      <img src="${ad.img}" alt="${ad.business}" style="object-position:${ad.imgPos};" loading="lazy">
-      ${badge}
-    </div>
-    <div class="lbl">
-      <span class="ln">${ad.business} — ${ad.offer}</span>
-      <span class="lc">${ad.cta} →</span>
-    </div>
-  `;
-  miniBB.appendChild(a);
+    <img src="${ad.img}" alt="${ad.business}" style="object-position:${ad.imgPos};" loading="lazy">
+    <div class="slide-label">
+      <span class="slide-label-name">${ad.business} — ${ad.offer}</span>
+      <span class="slide-label-cta">${ad.cta} →</span>
+    </div>`;
+  slideshow.appendChild(a);
+  const dot = document.createElement("button");
+  dot.className = "dot" + (i === 0 ? " active" : "");
+  dot.onclick = () => goTo(i);
+  dotsEl.appendChild(dot);
 });
 
-// Fill remaining slots with available tile if fewer than 6 ads
-for (let i = catAds.length; i < 6; i++) {
-  const av = document.createElement("a");
-  av.href = "../claim.html";
-  av.className = "t avail";
-  av.setAttribute("data-size", MINI_SIZES[i] || "sm");
-  av.innerHTML = `<div class="avail-plus">+</div><div class="avail-label">Your Ad</div><div class="avail-price">From $49</div>`;
-  miniBB.appendChild(av);
-}
+const slides = slideshow.querySelectorAll(".slide");
+const dots   = dotsEl.querySelectorAll(".dot");
 
-// ── DIRECTORY ──
+function goTo(n) {
+  slides[current].classList.remove("active");
+  dots[current].classList.remove("active");
+  current = (n + slides.length) % slides.length;
+  slides[current].classList.add("active");
+  dots[current].classList.add("active");
+  resetTimer();
+}
+function moveSlide(dir) { goTo(current + dir); }
+function resetTimer() { clearInterval(timer); timer = setInterval(() => goTo(current + 1), 5000); }
+if (slides.length > 1) resetTimer();
+
 function buildCard(biz) {
   const ad = biz.adId ? getAd(biz.adId) : null;
-  const img = ad
-    ? `<img src="${ad.img}" alt="${biz.name}" style="object-position:${ad.imgPos||'center'};" loading="lazy">`
-    : `<div style="width:100%;height:100%;background:#f0f0ee;display:flex;align-items:center;justify-content:center;font-size:48px;">${BIZ_EMOJIS[biz.category]||'🏪'}</div>`;
-  const badge = biz.hasPromo
-    ? `<div class="badge badge-promo">🏷️ Active Promo</div>`
-    : biz.isOpen ? `<div class="badge badge-open">● Open Now</div>` : "";
-  const promoStrip = biz.hasPromo && ad
-    ? `<div class="biz-promo-strip"><span class="biz-promo-text">${ad.offer}</span><span class="biz-promo-cta">View →</span></div>`
-    : `<div style="margin-top:8px;"><span style="font-size:12px;color:var(--mid);">View Profile →</span></div>`;
-
+  const img = ad ? `<img src="${ad.img}" alt="${biz.name}" style="object-position:${ad.imgPos||'center'};" loading="lazy">` : `<div style="width:100%;height:100%;background:#f0f0ee;display:flex;align-items:center;justify-content:center;font-size:48px;">${BIZ_EMOJIS[biz.category]||'🏪'}</div>`;
+  const badge = biz.hasPromo ? `<div class="badge badge-promo">🏷️ Active Promo</div>` : biz.isOpen ? `<div class="badge badge-open">● Open Now</div>` : "";
+  const promoStrip = biz.hasPromo && ad ? `<div class="biz-promo-strip"><span class="biz-promo-text">${ad.offer}</span><span class="biz-promo-cta">View →</span></div>` : `<div style="margin-top:8px;"><span style="font-size:12px;color:var(--mid);">View Profile →</span></div>`;
   const a = document.createElement("a");
   a.href = `../business/${biz.id}.html`;
   a.className = "biz-card";
@@ -235,8 +162,7 @@ function buildCard(biz) {
         <span class="meta-pill">📍 ${biz.neighbourhood}</span>
       </div>
       ${promoStrip}
-    </div>
-  `;
+    </div>`;
   return a;
 }
 
@@ -256,18 +182,10 @@ function render() {
   const list = getFiltered();
   grid.innerHTML = "";
   list.forEach(b => grid.appendChild(buildCard(b)));
-  document.getElementById("resultsCount").textContent =
-    `Showing ${list.length} business${list.length !== 1 ? "es" : ""}`;
+  document.getElementById("resultsCount").textContent = `Showing ${list.length} business${list.length !== 1 ? "es" : ""}`;
 }
 
 document.getElementById("sortSelect").addEventListener("change", render);
-document.querySelectorAll(".subcat-chips .chip").forEach(c => {
-  c.addEventListener("click", function() {
-    document.querySelectorAll(".subcat-chips .chip").forEach(x => x.classList.remove("on"));
-    this.classList.add("on");
-  });
-});
-
 render();
 </script>
 </body>
