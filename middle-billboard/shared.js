@@ -3,18 +3,13 @@
 // Injects nav + footer into every page
 // ─────────────────────────────────────────────
 
-const LOGO_SVG = `<a href="/index.html" class="logo-link">
-  <img src="/assets/logo.png" alt="Middle Calgary" class="logo-img">
-</a>`;
-
 function getNavHTML(activePage) {
   const pages = [
-    { href: "/index.html",          label: "Discover",       id: "discover"  },
-    { href: "/category/food-drink.html", label: "Food & Drink",   id: "food"     },
-    { href: "/category/events.html",     label: "Events",         id: "events"   },
-    { href: "/category/wellness.html",   label: "Wellness",       id: "wellness" },
-    { href: "/category/shopping.html",   label: "Shopping",       id: "shopping" },
-    { href: "/directory.html",           label: "Directory",      id: "directory"},
+    { href: "/index.html",               label: "Discover",     id: "discover" },
+    { href: "/category/food-drink.html", label: "Food & Drink", id: "food"     },
+    { href: "/category/events.html",     label: "Events",       id: "events"   },
+    { href: "/category/wellness.html",   label: "Wellness",     id: "wellness" },
+    { href: "/category/shopping.html",   label: "Shopping",     id: "shopping" },
   ];
   const links = pages.map(p => {
     const active = p.id === activePage ? "active" : "";
@@ -30,7 +25,7 @@ function getNavHTML(activePage) {
       <button class="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menu">☰</button>
     </nav>
     <div class="mobile-nav" id="mobileNav">
-      ${pages.map(p=>`<a href="${p.href}" class="mobile-nav-link">${p.label}</a>`).join("")}
+      ${pages.map(p => `<a href="${p.href}" class="mobile-nav-link">${p.label}</a>`).join("")}
       <a href="/claim.html" class="mobile-nav-cta">List your business →</a>
     </div>
   `;
@@ -54,7 +49,6 @@ function getFooterHTML() {
           </div>
           <div class="footer-col">
             <h4>Platform</h4>
-            <a href="/directory.html">Directory</a>
             <a href="/claim.html">List your business</a>
             <a href="/claim.html">Advertise</a>
           </div>
